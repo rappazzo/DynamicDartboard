@@ -1,0 +1,36 @@
+-good-
+woohoo, sounds\070-who2.wav
+kickass, sounds\cartmank.wav
+excellent, sounds\excellent.wav
+quack, sounds\quack.wav
+isthatlegal, sounds\113_legal.wav
+
+-bad-
+awwcrap, sounds\awwcrap.wav
+doh, sounds\doh.wav
+doh2, sounds\doh.wav
+fudge, sounds\fudge.wav
+ow, sounds\ow2.wav
+whatthehell, sounds\whatthe.wav
+whatthehell2, sounds\whatthe.wav
+whatwsth, sounds\whatwsth.wav
+whatwsth2, sounds\whatwsth.wav
+goodbye2, sounds\goodbye2.wav
+puke, sounds\puke.wav
+
+-neutral-
+whoosh, sounds\whoosh.wav
+airwrench, sounds\airwrench.wav
+arrow, sounds\arrowhit.wav
+doorslam, sounds\doorslam.wav
+munch, sounds\munch.wav
+smackfall, sounds\smackfall.wav
+wirdclink, sounds\wirdclink.wav
+zooming, sounds\zoomin.wav
+crash, sounds\krashbump.wav
+ned, sounds\ned1.wav
+kyled, sounds\kyled.wav
+
+-special-
+jeopardy, sounds\jeopardy.wav
+victory, sounds\victory.mid
