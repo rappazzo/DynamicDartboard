@@ -10,8 +10,8 @@ public class VictoryWindow extends Window implements Runnable, Animation {
    }
 
    public void init() {
-      setSize(1024 - 2 * DartBoard.W_OFFSET, 668 - 2 * DartBoard.H_OFFSET);
-      setLocation(DartBoard.W_OFFSET, DartBoard.H_OFFSET);
+      setSize(1024 - 2 * DartBoard.getScreenWidthOffset(), 668 - 2 * DartBoard.getScreenHeightOffset());
+      setLocation(DartBoard.getScreenWidthOffset(), DartBoard.getScreenHeightOffset());
       setLayout(null);
       line0 = new Label("YOU'RE", Label.CENTER);
       line1 = new Label("#1", Label.CENTER);
@@ -19,8 +19,8 @@ public class VictoryWindow extends Window implements Runnable, Animation {
       line1.setFont(new Font("Garamond", Font.ITALIC, 175));
       line0.setForeground(Color.white);
       line1.setForeground(Color.white);
-      line0.setBounds(0, (668 - 2 * DartBoard.H_OFFSET) / 4, 1024 - 2 * DartBoard.W_OFFSET, (668 - 2 * DartBoard.H_OFFSET) / 4);
-      line1.setBounds(0, 2 * (668 - 2 * DartBoard.H_OFFSET) / 4, 1024 - 2 * DartBoard.W_OFFSET, (668 - 2 * DartBoard.H_OFFSET) / 4);
+      line0.setBounds(0, (668 - 2 * DartBoard.getScreenHeightOffset()) / 4, 1024 - 2 * DartBoard.getScreenWidthOffset(), (668 - 2 * DartBoard.getScreenHeightOffset()) / 4);
+      line1.setBounds(0, 2 * (668 - 2 * DartBoard.getScreenHeightOffset()) / 4, 1024 - 2 * DartBoard.getScreenWidthOffset(), (668 - 2 * DartBoard.getScreenHeightOffset()) / 4);
       add(line0);
       add(line1);
       setVisible(true);

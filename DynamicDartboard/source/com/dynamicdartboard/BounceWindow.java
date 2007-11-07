@@ -16,10 +16,10 @@ public class BounceWindow extends Window implements Animation {
    }
 
    public void init(String name) {
-      int maxWidth = 1024 - 2 * DartBoard.W_OFFSET;
-      int maxHeight = 668 - 2 * DartBoard.H_OFFSET;
+      int maxWidth = 1024 - 2 * DartBoard.getScreenWidthOffset();
+      int maxHeight = 668 - 2 * DartBoard.getScreenHeightOffset();
       setSize(maxWidth, maxHeight);
-      setLocation(DartBoard.W_OFFSET, DartBoard.H_OFFSET);
+      setLocation(DartBoard.getScreenWidthOffset(), DartBoard.getScreenHeightOffset());
       setLayout(null);
       Font font = new Font("Garamond", Font.BOLD, 50);
       labels = new CustomLabel[name.length()];

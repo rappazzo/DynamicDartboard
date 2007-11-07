@@ -12,8 +12,8 @@ public class JeopardyWindow extends Window implements Runnable, Animation {
    }
 
    public void init(String name) {
-      setSize(1024 - 2 * DartBoard.W_OFFSET, 668 - 2 * DartBoard.H_OFFSET);
-      setLocation(DartBoard.W_OFFSET, DartBoard.H_OFFSET);
+      setSize(1024 - 2 * DartBoard.getScreenWidthOffset(), 668 - 2 * DartBoard.getScreenHeightOffset());
+      setLocation(DartBoard.getScreenWidthOffset(), DartBoard.getScreenHeightOffset());
       setLayout(null);
       Font font = new Font("Garamond", Font.BOLD, 55);
       line0 = new Label("FINAL E-DART", Label.CENTER);
@@ -29,10 +29,10 @@ public class JeopardyWindow extends Window implements Runnable, Animation {
       line1.setForeground(Color.white);
       line2.setForeground(Color.white);
       line3.setForeground(Color.white);
-      line0.setBounds(0, (668 - 2 * DartBoard.H_OFFSET) / 6, 1024 - 2 * DartBoard.W_OFFSET, (668 - 2 * DartBoard.H_OFFSET) / 6);
-      line1.setBounds(0, 2 * (668 - 2 * DartBoard.H_OFFSET) / 6, 1024 - 2 * DartBoard.W_OFFSET, (668 - 2 * DartBoard.H_OFFSET) / 6);
-      line2.setBounds(0, 3 * (668 - 2 * DartBoard.H_OFFSET) / 6, 1024 - 2 * DartBoard.W_OFFSET, (668 - 2 * DartBoard.H_OFFSET) / 6);
-      line3.setBounds(0, 4 * (668 - 2 * DartBoard.H_OFFSET) / 6, 1024 - 2 * DartBoard.W_OFFSET, (668 - 2 * DartBoard.H_OFFSET) / 6);
+      line0.setBounds(0, (668 - 2 * DartBoard.getScreenHeightOffset()) / 6, 1024 - 2 * DartBoard.getScreenWidthOffset(), (668 - 2 * DartBoard.getScreenHeightOffset()) / 6);
+      line1.setBounds(0, 2 * (668 - 2 * DartBoard.getScreenHeightOffset()) / 6, 1024 - 2 * DartBoard.getScreenWidthOffset(), (668 - 2 * DartBoard.getScreenHeightOffset()) / 6);
+      line2.setBounds(0, 3 * (668 - 2 * DartBoard.getScreenHeightOffset()) / 6, 1024 - 2 * DartBoard.getScreenWidthOffset(), (668 - 2 * DartBoard.getScreenHeightOffset()) / 6);
+      line3.setBounds(0, 4 * (668 - 2 * DartBoard.getScreenHeightOffset()) / 6, 1024 - 2 * DartBoard.getScreenWidthOffset(), (668 - 2 * DartBoard.getScreenHeightOffset()) / 6);
       add(line0);
       add(line1);
       add(line2);

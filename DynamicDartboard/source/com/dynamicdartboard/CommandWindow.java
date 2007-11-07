@@ -41,8 +41,8 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       rightPanel = new MyPanel(WIDTH, HEIGHT, this, "rightPanel");
       leftsp.add(leftPanel);
       rightsp.add(rightPanel);
-      leftsp.setBounds(DartBoard.W_OFFSET / 2, 0, WIDTH, HEIGHT - 5);
-      rightsp.setBounds(1024 - WIDTH - DartBoard.W_OFFSET / 2, 0, WIDTH, HEIGHT - 5);
+      leftsp.setBounds(DartBoard.getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
+      rightsp.setBounds(1024 - WIDTH - DartBoard.getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
       add(leftsp);
       add(rightsp);
       nextUp = new Label();
@@ -55,12 +55,12 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       setLabel.setName("Set");
       setLabel.setFont(new Font("Arial", Font.BOLD, 16));
       setLabel.setForeground(Color.blue);
-      setLabel.setBounds(1024 - WIDTH - DartBoard.W_OFFSET / 2 - 40, HEIGHT - 25, 30, 20);
+      setLabel.setBounds(1024 - WIDTH - DartBoard.getScreenWidthOffset() / 2 - 40, HEIGHT - 25, 30, 20);
       addLabel = new Label("Add", Label.CENTER);
       addLabel.setName("Add");
       addLabel.setFont(new Font("Arial", Font.BOLD, 16));
       addLabel.setForeground(Color.blue);
-      addLabel.setBounds(DartBoard.W_OFFSET / 2 + WIDTH + 10, HEIGHT - 25, 30, 20);
+      addLabel.setBounds(DartBoard.getScreenWidthOffset() / 2 + WIDTH + 10, HEIGHT - 25, 30, 20);
 
       add(setLabel);
       add(addLabel);
@@ -76,12 +76,12 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       orderListLabel.addMouseListener(this);
 
       nameField = new TextField();
-      nameField.setBounds(DartBoard.W_OFFSET / 2 + WIDTH + 10, HEIGHT - 55, 50, 20);
+      nameField.setBounds(DartBoard.getScreenWidthOffset() / 2 + WIDTH + 10, HEIGHT - 55, 50, 20);
       nameField.setName("nameField");
       add(nameField);
 
       numberField = new TextField();
-      numberField.setBounds(1024 - WIDTH - DartBoard.W_OFFSET / 2 - 40, HEIGHT - 55, 30, 20);
+      numberField.setBounds(1024 - WIDTH - DartBoard.getScreenWidthOffset() / 2 - 40, HEIGHT - 55, 30, 20);
       numberField.setName("numberField");
       add(numberField);
 

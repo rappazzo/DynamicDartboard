@@ -104,7 +104,7 @@ public class Board implements Serializable{
          if(pick >= boxes.size()) {
             pick = boxes.size() - 1;
          }
-         numberMap.get(Integer.valueOf(i)).addBox((Box)boxes.get(pick));
+         numberMap.get(Integer.valueOf(i)).addBox(boxes.get(pick));
          boxes.remove(pick);
       }
    }
