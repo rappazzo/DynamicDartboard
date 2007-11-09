@@ -47,23 +47,16 @@ public class MyPanel extends Panel {
       return null;
    }
 
-   public void fillPanel(BufferedReader fin) {
+   public void fillPanel(List<String> names) {
       LinePanel t = null;
       int i = 0;
-      try {
-         for (String next = fin.readLine(); next != null; next = fin.readLine()) {
-            if (next.trim().equals("")) {
-               continue;
-            }
-            t = new LinePanel(next.trim(), this);
-            t.setBounds(0, i, width, 18);
-            t.init();
-            i += 20;
-            add(t);
-            names.add(t);
-         }
-      } catch (IOException e) {
-         System.out.println("End of file reached");
+      for (String next : names) {
+         t = new LinePanel(next, this);
+         t.setBounds(0, i, width, 18);
+         t.init();
+         i += 20;
+         add(t);
+         this.names.add(t);
       }
       setSize(width, i + 20);
    }

@@ -87,7 +87,7 @@ public class SoundManager {
       BufferedReader fin = null;
       List<String> currentList = null;
       try {
-         fin = new BufferedReader(new InputStreamReader(new FileInputStream("resources/sounds/sounds.txt")));
+         fin = new BufferedReader(new InputStreamReader(new FileInputStream("../resources/sounds/sounds.txt")));
          soundFiles = new HashMap<String, String>();
          String sound = fin.readLine();
          while (sound != null) {

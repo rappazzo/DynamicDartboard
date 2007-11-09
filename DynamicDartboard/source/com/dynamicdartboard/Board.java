@@ -1,9 +1,8 @@
 package com.dynamicdartboard;
-import java.util.*;
-import java.awt.Graphics;
-import java.awt.Color;
-import java.awt.Window;
+import java.awt.*;
 import java.io.*;
+import java.util.*;
+import java.util.List;
 
 /*
  * represents the board

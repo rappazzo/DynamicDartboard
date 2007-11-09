@@ -14,7 +14,6 @@ public class CommandWindow extends Window implements MouseListener, Serializable
    MyPanel rightPanel;
    MyPanel orderPanel;
 
-   transient BufferedReader fin;
    Label nextUp;
    Label setLabel;
    Label addLabel;
@@ -32,8 +31,8 @@ public class CommandWindow extends Window implements MouseListener, Serializable
    }
 
    public void init() {
-      setSize(1024, HEIGHT);
-      setLocation(0, 668);
+      setSize(DartBoard.getInstance().getScreenWidth(), HEIGHT);
+      setLocation(0, DartBoard.getInstance().getScreenHeight() - HEIGHT);
       setLayout(null);
       leftsp = new ScrollPane();
       rightsp = new ScrollPane();
@@ -41,26 +40,26 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       rightPanel = new MyPanel(WIDTH, HEIGHT, this, "rightPanel");
       leftsp.add(leftPanel);
       rightsp.add(rightPanel);
-      leftsp.setBounds(DartBoard.getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
-      rightsp.setBounds(1024 - WIDTH - DartBoard.getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
+      leftsp.setBounds(DartBoard.getInstance().getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
+      rightsp.setBounds(DartBoard.getInstance().getScreenWidth() - WIDTH - DartBoard.getInstance().getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
       add(leftsp);
       add(rightsp);
       nextUp = new Label();
       nextUp.setFont(new Font("Arial", Font.BOLD, 25));
       nextUp.setForeground(Color.red);
       nextUp.setAlignment(Label.CENTER);
-      nextUp.setBounds((int)((1024 - WIDTH * 2) / 2), 0, (int)(WIDTH * 2), 40);
+      nextUp.setBounds((int)((DartBoard.getInstance().getScreenWidth() - WIDTH * 2) / 2), 0, (int)(WIDTH * 2), 40);
       add(nextUp);
       setLabel = new Label("Set", Label.CENTER);
       setLabel.setName("Set");
       setLabel.setFont(new Font("Arial", Font.BOLD, 16));
       setLabel.setForeground(Color.blue);
-      setLabel.setBounds(1024 - WIDTH - DartBoard.getScreenWidthOffset() / 2 - 40, HEIGHT - 25, 30, 20);
+      setLabel.setBounds(DartBoard.getInstance().getScreenWidth() - WIDTH - DartBoard.getInstance().getScreenWidthOffset() / 2 - 40, HEIGHT - 25, 30, 20);
       addLabel = new Label("Add", Label.CENTER);
       addLabel.setName("Add");
       addLabel.setFont(new Font("Arial", Font.BOLD, 16));
       addLabel.setForeground(Color.blue);
-      addLabel.setBounds(DartBoard.getScreenWidthOffset() / 2 + WIDTH + 10, HEIGHT - 25, 30, 20);
+      addLabel.setBounds(DartBoard.getInstance().getScreenWidthOffset() / 2 + WIDTH + 10, HEIGHT - 25, 30, 20);
 
       add(setLabel);
       add(addLabel);
@@ -71,27 +70,21 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       orderListLabel.setName("Grab Bag Order");
       orderListLabel.setFont(new Font("Arial", Font.BOLD, 16));
       orderListLabel.setForeground(Color.blue);
-      orderListLabel.setBounds((int)((1024 - WIDTH) / 2), HEIGHT - 25, WIDTH, 20);
+      orderListLabel.setBounds((int)((DartBoard.getInstance().getScreenWidth() - WIDTH) / 2), HEIGHT - 25, WIDTH, 20);
       add(orderListLabel);
       orderListLabel.addMouseListener(this);
 
       nameField = new TextField();
-      nameField.setBounds(DartBoard.getScreenWidthOffset() / 2 + WIDTH + 10, HEIGHT - 55, 50, 20);
+      nameField.setBounds(DartBoard.getInstance().getScreenWidthOffset() / 2 + WIDTH + 10, HEIGHT - 55, 50, 20);
       nameField.setName("nameField");
       add(nameField);
 
       numberField = new TextField();
-      numberField.setBounds(1024 - WIDTH - DartBoard.getScreenWidthOffset() / 2 - 40, HEIGHT - 55, 30, 20);
+      numberField.setBounds(DartBoard.getInstance().getScreenWidth() - WIDTH - DartBoard.getInstance().getScreenWidthOffset() / 2 - 40, HEIGHT - 55, 30, 20);
       numberField.setName("numberField");
       add(numberField);
 
-      try {
-         fin = new BufferedReader(new InputStreamReader(new FileInputStream("resources/names.txt")));
-         leftPanel.fillPanel(fin);
-         fin.close();
-      } catch (IOException e) {
-
-      }
+      leftPanel.fillPanel(DartBoard.getInstance().getUserNames());
       pack();
    }
 
