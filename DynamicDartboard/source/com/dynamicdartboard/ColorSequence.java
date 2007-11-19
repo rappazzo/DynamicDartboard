@@ -36,6 +36,7 @@ public class ColorSequence implements Enumeration<Color>, Iterator<Color> {
    private int green = 204;
    private int blue = 255;
    private int decrement = 51;
+   Random rnd;
    
    private Color lastColor = null;
 
@@ -43,6 +44,8 @@ public class ColorSequence implements Enumeration<Color>, Iterator<Color> {
     * 
     */
    public ColorSequence() {
+      rnd = new Random();
+      randomize();
    }
    
    public ColorSequence setDecrement(int decrement) {
@@ -50,6 +53,12 @@ public class ColorSequence implements Enumeration<Color>, Iterator<Color> {
          this.decrement = decrement;
       }
       return this;
+   }
+   
+   public void randomize() {
+      red = rnd.nextInt(255);
+      green = rnd.nextInt(255);
+      blue = rnd.nextInt(255);
    }
 
    public boolean hasMoreElements() {

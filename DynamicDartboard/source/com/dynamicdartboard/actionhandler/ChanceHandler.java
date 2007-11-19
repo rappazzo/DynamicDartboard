@@ -126,7 +126,7 @@ public class ChanceHandler implements ActionHandler {
                (x - center[X])*(x - center[X]) +
                (y - center[Y])*(y - center[Y])
             );
-            //check from the outside in
+            //check from the inside out
             for (int i = 0; i < NUMBER_OF_RINGS; i++) {
                if (distance < bullseyeRadii[i]) {
                   //set the value, and close the window
