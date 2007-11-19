@@ -52,6 +52,10 @@ public class Board implements Serializable{
       return numberMap.get(Integer.valueOf(value));
    }
    
+   public int numberOfBoardNumbersRemaining() { 
+      return numberMap.size();
+   }
+   
    public Set<Integer> getAvaliableNumbers() {
       return Collections.unmodifiableSet(numberMap.keySet());
    }
