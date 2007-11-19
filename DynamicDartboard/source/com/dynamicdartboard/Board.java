@@ -3,6 +3,7 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import com.dynamicdartboard.actionhandler.*;
 
 /*
  * represents the board
@@ -10,8 +11,8 @@ import java.util.List;
 
 public class Board implements Serializable{
    private Map<Integer, BoardNumber> numberMap;
-   public int COLUMNS = 11;
-   public int ROWS = 11;
+   private int COLUMNS = 11;
+   private int ROWS = 11;
    private Window owner = null;
    
    public Board() {
@@ -47,40 +48,32 @@ public class Board implements Serializable{
       ROWS = r;
    }
    
+   public BoardNumber getBoardNumber(int value) {
+      return numberMap.get(Integer.valueOf(value));
+   }
+   
+   public Set<Integer> getAvaliableNumbers() {
+      return Collections.unmodifiableSet(numberMap.keySet());
+   }
+   
    public double getPercent(Integer num) {
       int total = COLUMNS * ROWS;
-      double val = ((double)num.intValue())/total * 100.0;
+      double val = num.doubleValue()/total * 100.0;
       return val;
    }
       
    protected void generateNumbers(int size) {
       numberMap = new HashMap<Integer, BoardNumber>(size);
-      int r = 255, g = 204, b = 255;
+      ColorSequence colorSeq = new ColorSequence();
       
       for(int i = 1; i <= size; i++) {
-         BoardNumber number = new BoardNumber(new Integer(i));
-         if(i == 1) {
-            number.setAnimation(new VictoryWindow(owner));
-         } 
-         if(i == 99) {
-            number.setAnimation(new BounceWindow(owner, "YOU SUCK BIG TIME"));
-         } 
+         BoardNumber number = new BoardNumber(Integer.valueOf(i));
+         if (getPercent(Integer.valueOf(i)) <= 10) {
+            number.setActionHandler(new ChanceHandler());
+            number.setDisplayOverride("?");
+         }
 
-         if(b <= 0) {
-            b = 255;
-            g -= 51;
-         } else {
-            b -= 51;
-         }
-         if(g < 0) {
-            g = 255;
-            r -= 51;
-         }
-         if(r < 0) {
-            r = 255;
-         }
-         
-         number.setColor(new Color(r, g, b));
+         number.setColor(colorSeq.next());
          numberMap.put(number.getNumber(), number);
       }
    }
@@ -143,21 +136,26 @@ public class Board implements Serializable{
    }
    
    public BoardNumber removeBox( int x, int y ) {
-      Box box = new Box(x, y);
-      BoardNumber hit = null;
-      for(Iterator i = numberMap.values().iterator(); i.hasNext(); ){
-         BoardNumber item = (BoardNumber)i.next();
-         if(item.ownsBox(box) ) {
-            hit = item;
-            break;
-         }
-      }
-      if(hit != null) {
+      BoardNumber hit = findBoardNumber(x, y);
+      if (hit != null) {
          if(removeNumber(hit.getNumber())) {
             return hit;
          }
       }
       return null;
+   }
+   
+   public BoardNumber findBoardNumber(int x, int y) {
+      Box box = new Box(x, y);
+      BoardNumber hit = null;
+      for(Iterator i = numberMap.values().iterator(); i.hasNext(); ){
+         BoardNumber item = (BoardNumber)i.next();
+         if (item.ownsBox(box) ) {
+            hit = item;
+            break;
+         }
+      }
+      return hit;
    }
    
    public void clearMergedFlag() {

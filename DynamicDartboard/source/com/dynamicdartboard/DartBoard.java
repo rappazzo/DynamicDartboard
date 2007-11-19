@@ -6,6 +6,7 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.regex.*;
+import com.dynamicdartboard.actionhandler.*;
 
 public class DartBoard extends Window implements MouseListener, Serializable {
    
@@ -170,12 +171,20 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       return this.options != null ? this.options.get(optionName) : null;
    }
    
+   public Board getBoard() {
+      return this.board;
+   }
+   
+   public CommandWindow getCommandWindow() {
+      return this.commandWindow;
+   }
+   
    public int getColumns() {
-      return board.getColumns();
+      return getBoard().getColumns();
    }
 
    public int getRows() {
-      return board.getRows();
+      return getBoard().getRows();
    }
    
    public void reInit() {
@@ -272,75 +281,14 @@ public class DartBoard extends Window implements MouseListener, Serializable {
    public void paint(Graphics g) {
       Font font = new Font("Arial", Font.BOLD, 18);
       Dimension d = getSize();
-      int w = (int)(d.getWidth() / board.getColumns());
-      int h = (int)(d.getHeight() / board.getRows());
+      int w = (int)(d.getWidth() / getBoard().getColumns());
+      int h = (int)(d.getHeight() / getBoard().getRows());
       Box.setWidth(w);
       Box.setHeight(h);
       g.setFont(font);
       setBackground(Color.white);
       if (commandWindow != null && commandWindow.throwersLeft() > 0) {
-         board.drawBoard(g);
-      }
-   }
-
-   public void removeNumber(String number) {
-      try {
-         board.removeNumber(new Integer(number));
-         repaint();
-      } catch (NumberFormatException e) {
-         System.out.println("That is not a number!");
-      }
-   }
-
-   public void replaceNumber(int source, int replace) {
-      try {
-         board.replaceNumber(new Integer(source), new Integer(replace));
-         repaint();
-      } catch (NumberFormatException e) {
-         System.out.println("That is not a number!");
-      }
-   }
-
-   protected void processMouseEvent(MouseEvent e) {
-      if (e.getID() == MouseEvent.MOUSE_RELEASED && DARTBOARD.equals(e.getComponent().getName()) && commandWindow.throwersLeft() > 0) {
-         int x = e.getX();
-         int y = e.getY();
-         if (x <= 0 || y <= 0) {
-            return;
-         }
-         x = x / Box.getWidth();
-         y = y / Box.getHeight();
-         BoardNumber hit = board.removeBox(x, y);
-         repaint();
-         if (hit != null && hit.getNumber().intValue() != 0) {
-            Animation animation = hit.getAnimation();
-            if (animation != null) {
-               animation.play(commandWindow.getSelected());
-            } else {
-               Integer num = hit.getNumber();
-               double percent = board.getPercent(num);
-
-               if (percent <= 25) {
-                  SoundManager.playRandom("good");
-               } else if (percent <= 75) {
-                  SoundManager.playRandom("neutral");
-               } else {
-                  SoundManager.playRandom("bad");
-               }
-            }
-            commandWindow.assignNumber(hit.getNumber().intValue());
-            save(hit.getNumber().intValue());
-            if (commandWindow.throwersLeft() == 0) {
-               try {
-                  Thread.sleep(2000);
-               } catch (InterruptedException se) {
-               }
-               String loser = commandWindow.getHighestName();
-               if (loser != null) {
-                  new JeopardyWindow(parent).play(loser);
-               }
-            }
-         }
+         getBoard().drawBoard(g);
       }
    }
 
@@ -353,10 +301,50 @@ public class DartBoard extends Window implements MouseListener, Serializable {
          System.out.println(e);
       }
    }
+   
+   public void mouseReleased(MouseEvent mEvt) {
+      if (DARTBOARD.equals(mEvt.getComponent().getName()) && commandWindow.throwersLeft() > 0) {
+         int x = mEvt.getX();
+         int y = mEvt.getY();
+         if (x <= 0 || y <= 0) {
+            return;
+         }
+         x = x / Box.getWidth();
+         y = y / Box.getHeight();
+         BoardNumber hit = getBoard().findBoardNumber(x, y);
+if (hit.getNumber().intValue() == 15) {
+   System.exit(0);
+} else
+         if (hit != null && hit.getNumber().intValue() != 0) {
+            ActionHandler actionHandler = hit.getActionHandler();
+            actionHandler.handle(hit);
+            //BEGIN sounds
+            Integer num = hit.getNumber();
+            double percent = getBoard().getPercent(num);
+
+            if (percent <= 25) {
+               SoundManager.playRandom("good");
+            } else if (percent <= 75) {
+               SoundManager.playRandom("neutral");
+            } else {
+               SoundManager.playRandom("bad");
+            }
+            //END sounds
+            save(hit.getNumber().intValue());
+            if (commandWindow.throwersLeft() == 0) {
+               try {
+                  //$MR TODO: Add a special handler
+                  Thread.sleep(2000);
+               } catch (InterruptedException se) {
+               }
+            }
+         }
+         repaint();
+      }
+   }
 
    //Unused mouse events which are implemented as part of the MouseListener Interface
    public void mousePressed(MouseEvent mEvt) {}
-   public void mouseReleased(MouseEvent mEvt) {}
    public void mouseEntered(MouseEvent mEvt) {}
    public void mouseExited(MouseEvent mEvt) {}
    public void mouseClicked(MouseEvent mEvt) {}

@@ -5,27 +5,30 @@ import java.util.ArrayList;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.*;
+import com.dynamicdartboard.actionhandler.*;
 
 /*
  * Represents a number on the board
 **/
 public class BoardNumber implements Serializable {
    private Integer number;
+   private String displayOverride = null;
    private List<Box> box;
    private Color color;
    private boolean merged = false;
-   private transient Animation animation = null;
+   private transient ActionHandler actionHandler = new ActionHandler() {
+      public void handle(BoardNumber hit) {
+         DartBoard db = DartBoard.getInstance();
+         db.getCommandWindow().assignNumber(hit.getNumber().intValue());
+         db.getBoard().removeNumber(hit.getNumber());
+      }
+   };
 
    public BoardNumber () {
    }
 
    public BoardNumber (Integer number) {
       this.number = number;
-   }
-
-   public BoardNumber (Integer number, Animation animation) {
-      this.number = number;
-      this.animation = animation;
    }
 
    public Integer getNumber() {
@@ -36,12 +39,22 @@ public class BoardNumber implements Serializable {
       this.number = number;
    }
    
-   public void setAnimation(Animation a) {
-      animation = a;
+   public void setDisplayOverride(String displayOverride) {
+      this.displayOverride = displayOverride;
    }
    
-   public Animation getAnimation() {
-      return animation;
+   public String getDisplay() {
+      return (this.displayOverride != null ? displayOverride : String.valueOf(getNumber()));
+   }
+   
+   public void setActionHandler(ActionHandler actionHandler) {
+      if (actionHandler != null) {
+         this.actionHandler = actionHandler;
+      }
+   }
+   
+   public ActionHandler getActionHandler() {
+      return actionHandler;
    }
    
    public List<Box> getBoxes() {
@@ -69,7 +82,7 @@ public class BoardNumber implements Serializable {
    
    public Color getColor() {
       if(color == null) {
-         color = Color.orange;
+         color = Color.ORANGE;
       }
       return color;
    }
@@ -79,24 +92,17 @@ public class BoardNumber implements Serializable {
    }
    
    public void drawNumber(Graphics g) {
-      List boxes = getBoxes();
+      List<Box> boxes = getBoxes();
       if(boxes == null) {
          return;
       }
-      int rr, gg, bb;
-      rr = getColor().getRed();
-      gg = getColor().getGreen();
-      bb = getColor().getBlue();
-      rr = 255 - rr;
-      gg = 255 - gg;
-      bb = 255 - bb;
-      Color faceColor = new Color(rr, gg, bb);
+      Color faceColor = ColorSequence.blackOrWhiteNegativeOf(getColor());
       for(Iterator i = boxes.iterator(); i.hasNext(); ){
          Box box = (Box)i.next();
          box.drawBox(g, getColor());
          box.drawBorder(g, getBorders(box));
       }
-      ((Box)boxes.get(0)).drawFace(g, getNumber().toString(), faceColor);
+      boxes.get(0).drawFace(g, getDisplay(), faceColor);
    }
    
    public boolean[] getBorders(Box box) {
@@ -150,6 +156,22 @@ public class BoardNumber implements Serializable {
          return 1;
       }
       return getNumber().intValue() - bn.getNumber().intValue();
+   }
+   
+   class Shimmer extends Thread {
+      private static final long SHIMMER_INTERVAL = 100;
+
+      @Override
+      public void run() {
+         while (true) {
+            try {
+               sleep(SHIMMER_INTERVAL);
+               //redraw the font with the new shimmer color
+            } catch (Throwable e) {
+               //ignore
+            }
+         }
+      }
    }
  
 }

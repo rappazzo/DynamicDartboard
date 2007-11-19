@@ -155,9 +155,9 @@ public class CommandWindow extends Window implements MouseListener, Serializable
             LinePanel panel = rightPanel.getLinePanel(selected);
             int oldNumber = panel.getNumber();
             if (oldNumber > 0) {
-               dartBoard.replaceNumber(num, oldNumber);
+               replaceNumber(num, oldNumber);
             } else {
-               dartBoard.removeNumber(String.valueOf(num));
+               removeNumber(String.valueOf(num));
             }
             panel.setNumber(num);
             numberField.setText("");
@@ -166,6 +166,24 @@ public class CommandWindow extends Window implements MouseListener, Serializable
          }
       } catch (Exception e) {
          System.out.println("Exception when setting new number");
+      }
+   }
+
+   private void removeNumber(String number) {
+      try {
+         dartBoard.getBoard().removeNumber(Integer.valueOf(number));
+         dartBoard.repaint();
+      } catch (NumberFormatException e) {
+         System.out.println("That is not a number!");
+      }
+   }
+
+   private void replaceNumber(int source, int replace) {
+      try {
+         dartBoard.getBoard().replaceNumber(Integer.valueOf(source), Integer.valueOf(replace));
+         dartBoard.repaint();
+      } catch (NumberFormatException e) {
+         System.out.println("That is not a number!");
       }
    }
 
