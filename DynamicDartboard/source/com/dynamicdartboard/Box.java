@@ -11,10 +11,12 @@ public class Box implements Serializable {
    int column;
    int row;
 
-   public static final short NORTH = 0;
-   public static final short WEST = 1;
-   public static final short SOUTH = 2;
-   public static final short EAST = 3;
+   public static final short NORTHWEST = 0;
+   public static final short NORTHEAST = 1;
+   public static final short EAST = 2;
+   public static final short SOUTHEAST = 3;
+   public static final short SOUTHWEST = 4;
+   public static final short WEST = 5;
 
    private static int width = 50;
    private static int height = 50;
@@ -41,11 +43,11 @@ public class Box implements Serializable {
    }
 
    public int getX() {
-      return (column * getWidth());
+      return (row%2)*(getWidth()/2) + (column * getWidth());
    }
 
    public int getY() {
-      return (row * getHeight());
+      return 3*(row * getHeight())/4 ;
    }
 
    public static int getWidth() {
@@ -73,24 +75,73 @@ public class Box implements Serializable {
    public void drawBox(Graphics g, Color bg) {
       Color color = g.getColor();
       g.setColor(bg);
-      g.fillRect(getX(), getY(), getWidth(), getHeight());
+      g.fillPolygon(getxPoints(), getyPoints(), 6) ;
       g.setColor(color);
    }
 
-   public void drawBorder(Graphics g, boolean[] side) {
-      g.setColor(Color.black);
-      if (side[NORTH]) {
-         g.drawLine(getX(), getY(), getX() + getWidth(), getY());
+   public int[] getxPoints() {
+      int[] x = new int[6];
+      x[0] = getX();
+      x[1] = getX() + getWidth()/2;
+      x[2] = getX() + getWidth();
+      x[3] = getX() + getWidth();
+      x[4] = getX() + getWidth()/2;
+      x[5] = getX();
+      return x;
+   }
+
+   public int[] getyPoints() {
+     int[] y = new int[6];
+      y[0] = getY() + getHeight()/4;
+      y[1] = getY();
+      y[2] = getY() + getHeight()/4;
+      y[3] = getY() + 3*getHeight()/4;
+      y[4] = getY() + getHeight();
+      y[5] = getY() + 3*getHeight()/4;
+      return y;
+   }
+
+   
+
+   public void drawBorder(Graphics g, boolean[] side, Color bg) {
+      if (side[NORTHWEST]) {
+         g.setColor(Color.black);
+      } else {
+         g.setColor(bg);
       }
-      if (side[WEST]) {
-         g.drawLine(getX(), getY(), getX(), getY() + getHeight());
+      g.drawLine(getX(), getY()+getHeight()/4, getX() + getWidth()/2, getY());
+      if (side[NORTHEAST]) {
+         g.setColor(Color.black);
+      } else {
+         g.setColor(bg);
       }
-      if (side[SOUTH]) {
-         g.drawLine(getX(), getY() + getHeight(), getX() + getWidth(), getY() + getHeight());
-      }
+      g.drawLine( getX() + getWidth()/2, getY(), getX() + getWidth(), getY()+ getHeight()/4);
+      
       if (side[EAST]) {
-         g.drawLine(getX() + getWidth(), getY(), getX() + getWidth(), getY() + getHeight());
+         g.setColor(Color.black);
+      } else {
+         g.setColor(bg);
       }
+         g.drawLine(getX() + getWidth(), getY()+ getHeight()/4, getX() + getWidth(), getY() + 3*getHeight()/4);
+      if (side[SOUTHEAST]) {
+         g.setColor(Color.black);
+      } else {
+         g.setColor(bg);
+      }
+         g.drawLine( getX() + getWidth(), getY() + 3*getHeight()/4, getX() + getWidth()/2, getY() + getHeight());
+      if (side[SOUTHWEST]) {
+         g.setColor(Color.black);
+      } else {
+         g.setColor(bg);
+      }
+         g.drawLine(getX() + getWidth()/2, getY() + getHeight(), getX(), getY() + 3*getHeight()/4);
+      if (side[WEST]) {
+         g.setColor(Color.black);
+      } else {
+         g.setColor(bg);
+      }
+      g.drawLine( getX(), getY() + 3*getHeight()/4, getX(), getY()+getHeight()/4);
+      
    }
 
    public void drawFace(Graphics g, String face, Color color) {

@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
+import java.math.*;
 import java.util.regex.*;
 import com.dynamicdartboard.actionhandler.*;
 
@@ -281,14 +282,18 @@ public class DartBoard extends Window implements MouseListener, Serializable {
    public void paint(Graphics g) {
       Font font = new Font("Arial", Font.BOLD, 18);
       Dimension d = getSize();
-      int w = (int)(d.getWidth() / getBoard().getColumns());
-      int h = (int)(d.getHeight() / getBoard().getRows());
-      Box.setWidth(w);
-      Box.setHeight(h);
+      Board board = getBoard();
+      int w = (int)(d.getWidth() / board.getColumns());
+      //we should account for the rows being offset by a half width.
+      int wOffset = w / (2 * board.getColumns());
+      int h = (int)(d.getHeight() / (board.getRows() - 1));
+      int hOffset = h / (4 * board.getRows());
+      Box.setWidth(w - wOffset);
+      Box.setHeight(h - hOffset);
       g.setFont(font);
       setBackground(Color.white);
       if (commandWindow != null && commandWindow.throwersLeft() > 0) {
-         getBoard().drawBoard(g);
+         board.drawBoard(g);
       }
    }
 
@@ -306,11 +311,50 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       if (DARTBOARD.equals(mEvt.getComponent().getName()) && commandWindow.throwersLeft() > 0) {
          int x = mEvt.getX();
          int y = mEvt.getY();
+
          if (x <= 0 || y <= 0) {
             return;
          }
+        int r = 0;
+        if(y < Box.getHeight()/4.0 ) {
+              r =  (int)(Box.getHeight()/2.0) + y;
+              y = -1;
+         } else {
+            y = (int)(y - Box.getHeight()/4.0);
+            r = (int)(y%(3.0*Box.getHeight()/4));
+            y = (int)(y / (3.0*Box.getHeight()/4));
+         }
+         if(Math.abs(y) % 2 == 1) {
+            x = x - Box.getWidth()/2;
+         }
+         if(x < 0 ) {
+            return ;
+         }
+         int rx = x%Box.getWidth();
          x = x / Box.getWidth();
-         y = y / Box.getHeight();
+         if(r > Box.getHeight()/2.0){
+           double M = (Box.getHeight()/4.0)/(Box.getWidth()/2.0); //get default slope line
+           System.out.println(M);
+            if(rx < Box.getWidth()/2.0) {
+                double m = (r - (Box.getHeight()/2.0))/(rx);
+                System.out.println(m);
+                if(m < M) {
+                    y--;
+                } else if(Math.abs(y)%2==0){
+                  x--;
+                }
+
+            } else{
+                double m = (r - (Box.getHeight()/2.0))/(Box.getWidth()-rx);
+                if(m < M) {
+                    y--;
+                } else if(Math.abs(y)%2==1){
+                  x++;
+                }
+            }
+           y++;
+
+        }
          BoardNumber hit = getBoard().findBoardNumber(x, y);
 if (hit.getNumber().intValue() == 15) {
    System.exit(0);

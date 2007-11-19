@@ -194,26 +194,35 @@ public class Board implements Serializable{
       int c = box.getColumn();
       int r = box.getRow();
       BoardNumber best = null;
-      BoardNumber north = getBoxOwner(new Box(c , r - 1));
-      BoardNumber west  = getBoxOwner(new Box(c - 1, r));
-      BoardNumber south = getBoxOwner(new Box(c , r + 1));
+        
+      BoardNumber northwest = getBoxOwner(new Box(r%2==0 ? c-1 : c , r - 1));
+      BoardNumber northeast  = getBoxOwner(new Box(r%2==1 ? c+1 : c, r-1));
       BoardNumber east  = getBoxOwner(new Box(c + 1, r));
-      if(north != null) {
-         best = north;
-      } else if(west != null) {
-         best = west;
-      } else if(south != null) {
-         best = south;
+      BoardNumber southeast = getBoxOwner(new Box(r%2==1 ? c+1 :c, r + 1));
+      BoardNumber southwest = getBoxOwner(new Box(r%2==0 ? c-1 :c, r + 1));
+      BoardNumber west  = getBoxOwner(new Box(c-1, r));
+      if(northwest != null) {
+         best = northwest;
+      } else if(northeast != null) {
+         best = northeast;
       } else if(east != null) {
          best = east;
+      } else if(southeast != null) {
+         best = southeast;
+      } else if(southwest != null) {
+         best = southwest;
+      } else if(west != null) {
+         best = west;
       }
       if(best == null) {
          return null;
       }
-      best = compareBest(best, north);
-      best = compareBest(best, west);
-      best = compareBest(best, south);
+      best = compareBest(best, northwest);
+      best = compareBest(best, northeast);
       best = compareBest(best, east);
+      best = compareBest(best, southeast);
+      best = compareBest(best, southwest);
+      best = compareBest(best, west);
       return best;
    }
 

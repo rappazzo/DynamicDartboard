@@ -100,40 +100,54 @@ public class BoardNumber implements Serializable {
       for(Iterator i = boxes.iterator(); i.hasNext(); ){
          Box box = (Box)i.next();
          box.drawBox(g, getColor());
-         box.drawBorder(g, getBorders(box));
+         box.drawBorder(g, getBorders(box), getColor());
       }
       boxes.get(0).drawFace(g, getDisplay(), faceColor);
    }
    
    public boolean[] getBorders(Box box) {
-      boolean rv[] = new boolean[4];
+      boolean rv[] = new boolean[6];
+      int r = box.getRow();
       Box item = new Box (box.getColumn(), box.getRow());
       item.setRow(box.getRow() - 1);
+      item.setColumn(r%2==0 ? box.getColumn() - 1 : box.getColumn());
       if(!ownsBox(item)) { 
-         rv[Box.NORTH] = true;
+         rv[Box.NORTHWEST] = true;
       } else {
-         rv[Box.NORTH] = false;
+         rv[Box.NORTHWEST] = false;
       }
-      item.setColumn(box.getColumn() - 1);
+      item.setColumn(r%2==1 ? box.getColumn() +1 : box.getColumn());
+      if(!ownsBox(item)) { 
+         rv[Box.NORTHEAST] = true;
+      } else {
+         rv[Box.NORTHEAST] = false;
+      }
       item.setRow(box.getRow());
-      if(!ownsBox(item)) { 
-         rv[Box.WEST] = true;
-      } else {
-         rv[Box.WEST] = false;
-      }
-      item.setColumn(box.getColumn());
-      item.setRow(box.getRow() + 1);
-      if(!ownsBox(item)) { 
-         rv[Box.SOUTH] = true;
-      } else {
-         rv[Box.SOUTH] = false;
-      }
-      item.setColumn(box.getColumn() + 1);
-      item.setRow(box.getRow());
+      item.setColumn(box.getColumn()+1);
       if(!ownsBox(item)) { 
          rv[Box.EAST] = true;
       } else {
          rv[Box.EAST] = false;
+      }
+      item.setRow(box.getRow() + 1);
+      item.setColumn(r%2==1 ? box.getColumn() +1 : box.getColumn());
+      if(!ownsBox(item)) { 
+         rv[Box.SOUTHEAST] = true;
+      } else {
+         rv[Box.SOUTHEAST] = false;
+      }
+      item.setColumn(r%2==0 ? box.getColumn() - 1 : box.getColumn());
+      if(!ownsBox(item)) { 
+         rv[Box.SOUTHWEST] = true;
+      } else {
+         rv[Box.SOUTHWEST] = false;
+      }
+      item.setRow(box.getRow());
+      item.setColumn(box.getColumn() - 1 );
+      if(!ownsBox(item)) { 
+         rv[Box.WEST] = true;
+      } else {
+         rv[Box.WEST] = false;
       }
       return rv;
    }

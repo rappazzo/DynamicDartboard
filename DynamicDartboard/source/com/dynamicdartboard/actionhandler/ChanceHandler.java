@@ -32,7 +32,7 @@ public class ChanceHandler implements ActionHandler {
    private static class ChanceWindow extends Window implements MouseListener {
       
       //the bullseye should be made up of 5? rings of increasing breadth
-      private final int NUMBER_OF_RINGS = Math.min(5, DartBoard.getInstance().getBoard().numberOfBoardNumbersRemaining());
+      private final int NUMBER_OF_RINGS = 5;
       private int[][] bullseyePoints = new int[NUMBER_OF_RINGS][2];
       private int[] bullseyeRadii = new int[NUMBER_OF_RINGS];
       private Color[] colors = new Color[NUMBER_OF_RINGS];
@@ -81,12 +81,15 @@ public class ChanceHandler implements ActionHandler {
             }
          }
          //replace the first element with the original value (replace to keep the size consistent)
-         values.set(0, Integer.valueOf(originalValue));
+         if (values.size() > 0) {
+            values.set(0, Integer.valueOf(originalValue));
+         } else {
+            values.add(Integer.valueOf(originalValue));
+         }
          Random rnd = new Random();
          int boardSize = board.getColumns() * board.getRows();
-         int rndMax = boardSize - boardSize/10;
          while (values.size() < NUMBER_OF_RINGS) {
-            Integer randomValue = Integer.valueOf(rnd.nextInt(rndMax) + boardSize/10);
+            Integer randomValue = Integer.valueOf(rnd.nextInt(25) + boardSize);
             if (!values.contains(randomValue)) {
                values.add(randomValue);
             }
