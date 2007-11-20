@@ -38,7 +38,7 @@ public class ColorSequence implements Enumeration<Color>, Iterator<Color> {
    private int decrement = 51;
    Random rnd;
    
-   private Color lastColor = null;
+   protected Color lastColor = null;
 
    /**
     * 
@@ -53,6 +53,10 @@ public class ColorSequence implements Enumeration<Color>, Iterator<Color> {
          this.decrement = decrement;
       }
       return this;
+   }
+   
+   public int getDecrement() {
+      return this.decrement;
    }
    
    public void randomize() {
@@ -77,15 +81,15 @@ public class ColorSequence implements Enumeration<Color>, Iterator<Color> {
       //when we are reseting a color, that color is less than zero.  
       //Adding the remainder (ie, "+ (blue % 255)") will effectively be a sutraction 
       if (blue >= 0) {
-         blue -= decrement;
+         blue -= getDecrement();
       }
       if (blue < 0) {
          blue = 255 + (blue % 255);
-         green -= decrement;
+         green -= getDecrement();
       }
       if(green < 0) {
          green = 255 + (green % 255);
-         red -= decrement;
+         red -= getDecrement();
       }
       if(red < 0) {
          red = 255 + (red % 255);

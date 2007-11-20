@@ -26,7 +26,6 @@ public class ChanceHandler implements ActionHandler {
     */
    public void handle(BoardNumber hit) {
       ChanceWindow chanceWindow = new ChanceWindow(hit);
-
    }
    
    private static class ChanceWindow extends Window implements MouseListener {
@@ -103,6 +102,8 @@ public class ChanceHandler implements ActionHandler {
          g.drawRect(0, 0, (int)getSize().getWidth() - 1, (int)getSize().getHeight() - 1);
          //draw from the outside in
          g.setFont(new Font("Arial", Font.BOLD, 18));
+         FontMetrics fontMetrics = g.getFontMetrics();
+         int fontHeightAdjustment = fontMetrics.getHeight() / 2;
          int radiusBase = (int)Math.min(getSize().getWidth(), getSize().getHeight()) * NUMBER_OF_RINGS / 100;
          for (int i = NUMBER_OF_RINGS - 1; i >= 0; i--) {
             //draw the circle
@@ -111,8 +112,10 @@ public class ChanceHandler implements ActionHandler {
             g.setColor(Color.BLACK);
             g.drawOval(bullseyePoints[i][X], bullseyePoints[i][Y], bullseyeRadii[i] * 2, bullseyeRadii[i] * 2);
             g.setColor(ColorSequence.blackOrWhiteNegativeOf(colors[i]));
-            //9 = 1/2 of the font size
-            g.drawString(String.valueOf(values.get(i)), bullseyePoints[i][X] + radiusBase - 5, center[Y] + 9); 
+            g.drawString(
+               String.valueOf(values.get(i)), 
+               bullseyePoints[i][X] + radiusBase - (fontMetrics.stringWidth(String.valueOf(values.get(i))) / 2), 
+               center[Y] + fontHeightAdjustment); 
          }
       }
       

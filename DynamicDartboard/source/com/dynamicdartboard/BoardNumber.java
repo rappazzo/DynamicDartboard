@@ -56,7 +56,7 @@ public class BoardNumber implements Serializable {
    public ActionHandler getActionHandler() {
       return actionHandler;
    }
-   
+
    public List<Box> getBoxes() {
       return box;
    }
@@ -170,22 +170,6 @@ public class BoardNumber implements Serializable {
          return 1;
       }
       return getNumber().intValue() - bn.getNumber().intValue();
-   }
-   
-   class Shimmer extends Thread {
-      private static final long SHIMMER_INTERVAL = 100;
-
-      @Override
-      public void run() {
-         while (true) {
-            try {
-               sleep(SHIMMER_INTERVAL);
-               //redraw the font with the new shimmer color
-            } catch (Throwable e) {
-               //ignore
-            }
-         }
-      }
    }
  
 }

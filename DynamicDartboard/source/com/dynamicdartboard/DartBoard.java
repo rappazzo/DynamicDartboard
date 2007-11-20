@@ -10,17 +10,17 @@ import java.util.regex.*;
 import com.dynamicdartboard.actionhandler.*;
 
 public class DartBoard extends Window implements MouseListener, Serializable {
-   
+
    public static final String DARTBOARD = "DartBoard";
-   
+
    private List<String> userNames = null;
    private Map<String, String> options = null;
-   
+
    private Integer screenWidth = null;
    private Integer screenHeight = null;
    private Integer widthOffset = null;
    private Integer heightOffset = null;
-   
+
    Board board;
    CommandWindow commandWindow;
    Frame parent;
@@ -30,11 +30,11 @@ public class DartBoard extends Window implements MouseListener, Serializable {
    public static final String BOTTOM = "bottom";
    public static final String LEFT = "left";
    public static final String RIGHT = "right";
-   
+
    private static final int WIDTH_OFFSET_PERCENTAGE = 12;
    private static final int HEIGHT_OFFSET_PERCENTAGE = 6;
    public static final String DEFAULT_IMAGE_RESOURCE_FILE = "../resources/images/decorations.ini";
-   
+
    private static DartBoard INSTANCE = null;
 
    transient static WindowAdapter winadapt = new WindowAdapter() {
@@ -42,14 +42,14 @@ public class DartBoard extends Window implements MouseListener, Serializable {
          System.exit(0);
       }
    };
-   
+
    /**
     * get the singletone instance
     */
    public static DartBoard getInstance() {
       return INSTANCE;
    }
-   
+
    /**
     * create a new dartboard
     */
@@ -88,7 +88,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       parent = frame;
       parent.addWindowListener(winadapt);
    }
-   
+
    /**
     * get/set the (usable) screen width
     */
@@ -99,13 +99,13 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       }
       return screenWidth.intValue();
    }
-   
+
    public void setScreenWidth(int newScreenWidth) {
       if (newScreenWidth > 100) {
          screenWidth = newScreenWidth;
       }
    }
-   
+
    public int getScreenWidthOffset() {
       if (widthOffset == null) {
          if (screenWidth == null) {
@@ -126,7 +126,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       }
       return screenHeight.intValue();
    }
-   
+
    public void setScreenHeight(int newScreenHeight) {
       if (newScreenHeight > 100) {
          this.screenHeight = newScreenHeight;
@@ -142,44 +142,48 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       }
       return heightOffset.intValue();
    }
-   
+
    /**
     * get/set/add the list of names to be used in the dartboard
     */
    public void setUserNames(List<String> names) {
       this.userNames = names;
    }
+
    public void addUserName(String name) {
       if (this.userNames == null) {
          this.userNames = new ArrayList();
       }
       this.userNames.add(name);
    }
-   public List<String> getUserNames(){
+
+   public List<String> getUserNames() {
       return this.userNames;
    }
-   
+
    /**
     * get/set the options for the dartboard
     */
-   public Map<String, String> getOptions(){
+   public Map<String, String> getOptions() {
       return this.options;
    }
+
    public void setOptions(Map<String, String> options) {
       this.options = options;
    }
+
    public String getOptionValue(String optionName) {
       return this.options != null ? this.options.get(optionName) : null;
    }
-   
+
    public Board getBoard() {
       return this.board;
    }
-   
+
    public CommandWindow getCommandWindow() {
       return this.commandWindow;
    }
-   
+
    public int getColumns() {
       return getBoard().getColumns();
    }
@@ -187,7 +191,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
    public int getRows() {
       return getBoard().getRows();
    }
-   
+
    public void reInit() {
       windowMap.get(LEFT).removeAll();
       windowMap.get(RIGHT).removeAll();
@@ -210,7 +214,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       right.addWindowListener(winadapt);
       setupWindows();
    }
-   
+
    private void setupWindows() {
       addWindowListener(winadapt);
       setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -240,7 +244,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       windowDimension.put(RIGHT, new Dimension(getScreenWidthOffset() - 20, getScreenWidthOffset() - 20));
       windowDimension.put(TOP, new Dimension(getScreenWidth() - 2 * getScreenWidthOffset(), getScreenHeightOffset()));
       windowDimension.put(BOTTOM, new Dimension(getScreenWidth() - 2 * getScreenWidthOffset(), getScreenHeightOffset()));
-      
+
       try {
          File imageResourceFile = new File(DEFAULT_IMAGE_RESOURCE_FILE);
          BufferedReader reader = new BufferedReader(new FileReader(imageResourceFile));
@@ -306,7 +310,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
          System.out.println(e);
       }
    }
-   
+
    public void mouseReleased(MouseEvent mEvt) {
       if (DARTBOARD.equals(mEvt.getComponent().getName()) && commandWindow.throwersLeft() > 0) {
          int x = mEvt.getX();
@@ -315,50 +319,48 @@ public class DartBoard extends Window implements MouseListener, Serializable {
          if (x <= 0 || y <= 0) {
             return;
          }
-        int r = 0;
-        if(y < Box.getHeight()/4.0 ) {
-              r =  (int)(Box.getHeight()/2.0) + y;
-              y = -1;
+         int r = 0;
+         if (y < Box.getHeight() / 4.0) {
+            r = (int)(Box.getHeight() / 2.0) + y;
+            y = -1;
          } else {
-            y = (int)(y - Box.getHeight()/4.0);
-            r = (int)(y%(3.0*Box.getHeight()/4));
-            y = (int)(y / (3.0*Box.getHeight()/4));
+            y = (int)(y - Box.getHeight() / 4.0);
+            r = (int)(y % (3.0 * Box.getHeight() / 4));
+            y = (int)(y / (3.0 * Box.getHeight() / 4));
          }
-         if(Math.abs(y) % 2 == 1) {
-            x = x - Box.getWidth()/2;
+         if (Math.abs(y) % 2 == 1) {
+            x = x - Box.getWidth() / 2;
          }
-         if(x < 0 ) {
-            return ;
+         if (x < 0) {
+            return;
          }
-         int rx = x%Box.getWidth();
+         int rx = x % Box.getWidth();
          x = x / Box.getWidth();
-         if(r > Box.getHeight()/2.0){
-           double M = (Box.getHeight()/4.0)/(Box.getWidth()/2.0); //get default slope line
-           System.out.println(M);
-            if(rx < Box.getWidth()/2.0) {
-                double m = (r - (Box.getHeight()/2.0))/(rx);
-                System.out.println(m);
-                if(m < M) {
-                    y--;
-                } else if(Math.abs(y)%2==0){
+         if (r > Box.getHeight() / 2.0) {
+            double M = (Box.getHeight() / 4.0) / (Box.getWidth() / 2.0); //get default slope line
+            if (rx < Box.getWidth() / 2.0) {
+               double m = (r - (Box.getHeight() / 2.0)) / (rx);
+               if (m < M) {
+                  y--;
+               } else if (Math.abs(y) % 2 == 0) {
                   x--;
-                }
+               }
 
-            } else{
-                double m = (r - (Box.getHeight()/2.0))/(Box.getWidth()-rx);
-                if(m < M) {
-                    y--;
-                } else if(Math.abs(y)%2==1){
+            } else {
+               double m = (r - (Box.getHeight() / 2.0)) / (Box.getWidth() - rx);
+               if (m < M) {
+                  y--;
+               } else if (Math.abs(y) % 2 == 1) {
                   x++;
-                }
+               }
             }
-           y++;
+            y++;
 
-        }
+         }
          BoardNumber hit = getBoard().findBoardNumber(x, y);
-if (hit.getNumber().intValue() == 15) {
+if (hit != null && hit.getNumber().intValue() == 15) {
    System.exit(0);
-} else
+} else 
          if (hit != null && hit.getNumber().intValue() != 0) {
             ActionHandler actionHandler = hit.getActionHandler();
             actionHandler.handle(hit);
@@ -388,13 +390,20 @@ if (hit.getNumber().intValue() == 15) {
    }
 
    //Unused mouse events which are implemented as part of the MouseListener Interface
-   public void mousePressed(MouseEvent mEvt) {}
-   public void mouseEntered(MouseEvent mEvt) {}
-   public void mouseExited(MouseEvent mEvt) {}
-   public void mouseClicked(MouseEvent mEvt) {}
+   public void mousePressed(MouseEvent mEvt) {
+   }
+
+   public void mouseEntered(MouseEvent mEvt) {
+   }
+
+   public void mouseExited(MouseEvent mEvt) {
+   }
+
+   public void mouseClicked(MouseEvent mEvt) {
+   }
 
    public static void main(String[] args) {
       DartBoardSetup.run(args);
    }
-   
+
 }

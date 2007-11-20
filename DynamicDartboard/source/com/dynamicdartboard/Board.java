@@ -72,7 +72,7 @@ public class Board implements Serializable{
       
       for(int i = 1; i <= size; i++) {
          BoardNumber number = new BoardNumber(Integer.valueOf(i));
-         if (getPercent(Integer.valueOf(i)) <= 10) {
+         if (getPercent(Integer.valueOf(i)) <= 15) {
             number.setActionHandler(new ChanceHandler());
             number.setDisplayOverride("?");
          }
