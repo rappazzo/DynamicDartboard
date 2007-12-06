@@ -47,7 +47,7 @@ public class ChanceHandler implements ActionHandler {
          DartBoard db = DartBoard.getInstance();
          setName(CHANCE_WINDOW);
          setSize(db.getScreenWidth() - 2 * db.getScreenWidthOffset(), db.getScreenHeight() - 2 * db.getScreenHeightOffset() - (int)db.getCommandWindow().getSize().getHeight());
-         setLocation(db.getScreenWidthOffset(), db.getScreenHeightOffset());
+         setLocation(db.getLocationOffset() + db.getScreenWidthOffset(), db.getScreenHeightOffset());
          setLayout(null);
          center = new int[]{
             (int)getSize().getWidth() / 2, 

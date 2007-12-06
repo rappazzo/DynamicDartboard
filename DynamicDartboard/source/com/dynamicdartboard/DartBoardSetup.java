@@ -2,38 +2,66 @@ package com.dynamicdartboard;
 
 import java.awt.*;
 import java.io.*;
+import java.math.*;
 import java.util.*;
 import java.util.List;
 
 public class DartBoardSetup {
+   
+   private static String dartboardPath = null;
 
    //Arguments
    public static final String SCREEN_WIDTH = "width";
    public static final String SCREEN_HEIGHT = "height";
+   public static final String OFFSET = "offset";
    public static final String ROWS = "rows";
    public static final String COLS = "columns";
    public static final String FILE = "file";
    public static final String NAMES = "list";
    public static final String HELP = "help";
    public static final Collection<String> ARG_TYPES = Collections.unmodifiableCollection(Arrays.asList(new String[] {
-      ROWS, COLS, FILE, NAMES, HELP, SCREEN_WIDTH, SCREEN_HEIGHT,
+      ROWS, COLS, FILE, NAMES, HELP, SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET,
    }));
    public static final Collection<String> ARGS_WITH_OPTIONS = Collections.unmodifiableCollection(Arrays.asList(new String[] {
-      ROWS, COLS, FILE, NAMES, SCREEN_WIDTH, SCREEN_HEIGHT,
+      ROWS, COLS, FILE, NAMES, SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET,
    }));
    
-   public static final String DEFAULT_NAMES_FILE = "../resources/names.txt";
+   public static final String DEFAULT_NAMES_FILE = getDartboardPath() + "resources/names.txt";
+   
+   public static String getDartboardPath() {
+      if (dartboardPath == null) {
+         File currentDir = new File(".").getAbsoluteFile();
+         FilenameFilter rootFilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+               return name.equalsIgnoreCase("root");
+            }
+         };
+         while (dartboardPath == null && currentDir.getParent() != null) {
+            String[] files = currentDir.list(rootFilter);
+            if (files != null && files.length == 1) {
+               dartboardPath = currentDir.getAbsolutePath();
+            }
+            currentDir = currentDir.getParentFile();
+         }
+         if (dartboardPath == null) {
+            dartboardPath = "/DynamicDartboard";
+         }
+         dartboardPath += "/";
+      }
+      return dartboardPath;
+   }
 
    public static void run(String args[]) {
       StringBuilder usage = new StringBuilder();
       usage.append("Usage:  java DartBoard [options]\n");
       usage.append("  Options:\n");
       usage.append("    -w --width <##> - specify the screen width (full width is default)\n");
-      usage.append("    -h --height <## > - specify the screen height (full height is default)\n");
+      usage.append("    -h --height <##> - specify the screen height (full height is default)\n");
       usage.append("    -f --file <file name> - specify a file to resume a game in progress\n");
       usage.append("    -r --rows <##> - specify the number of rows\n");
       usage.append("    -c --columns <##> - specify the number of columns\n");
       usage.append("    -n --names <file name> - specify a file with the list of names to start from.\n");
+      usage.append("    -o --offset <##> - specify the position offset (specify a number or +X to shift by X screen widths).\n");
       usage.append("    -? --help - show this help text.\n\n");
       usage.append(" A dartboard will be started in one of these possible option sets (with the following priority):\n");
       usage.append("    (1) Resume from a previous session (this will ignore the ROWS, COLUMNS, and LIST options).\n");
@@ -109,8 +137,23 @@ public class DartBoardSetup {
                Frame parent = new Frame();
                dartBoard = DartBoard.getInstance().create(parent);
                setScreenDimensions(argMap, dartBoard);
-               dartBoard.setSize(DartBoard.getInstance().getScreenWidth() - 2 * DartBoard.getInstance().getScreenWidthOffset(), DartBoard.getInstance().getScreenHeight() - 2 * DartBoard.getInstance().getScreenHeightOffset() - CommandWindow.HEIGHT);
-               dartBoard.setLocation(DartBoard.getInstance().getScreenWidthOffset(), DartBoard.getInstance().getScreenHeightOffset());
+               int offset = 0;
+               String offsetString = argMap.get(OFFSET);
+               try {
+                  if (offsetString.charAt(0) == '+') {
+                     offset = new BigDecimal(offsetString.substring(1)).multiply(new BigDecimal(dartBoard.getScreenWidth())).intValue();
+                  } else {
+                     offset = Integer.valueOf(offsetString).intValue();
+                  }
+               } catch (NumberFormatException e) {
+                  offset = 0;
+               }
+               if (offset < 0) {
+                  offset = 0;
+               }
+               dartBoard.setLocationOffset(offset);
+               dartBoard.setSize(dartBoard.getScreenWidth() - 2 * dartBoard.getScreenWidthOffset(), dartBoard.getScreenHeight() - 2 * dartBoard.getScreenHeightOffset() - CommandWindow.HEIGHT);
+               dartBoard.setLocation(offset + dartBoard.getScreenWidthOffset(), dartBoard.getScreenHeightOffset());
                dartBoard.setName(DartBoard.DARTBOARD);
                dartBoard.setUserNames(names);
                dartBoard.init(rows, cols);

@@ -35,7 +35,7 @@ public class ColorSequence implements Enumeration<Color>, Iterator<Color> {
    private int red = 255;
    private int green = 204;
    private int blue = 255;
-   private int decrement = 51;
+   private int decrement = 75;
    Random rnd;
    
    protected Color lastColor = null;

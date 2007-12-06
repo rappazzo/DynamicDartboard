@@ -31,8 +31,9 @@ public class CommandWindow extends Window implements MouseListener, Serializable
    }
 
    public void init() {
-      setSize(DartBoard.getInstance().getScreenWidth(), HEIGHT);
-      setLocation(0, DartBoard.getInstance().getScreenHeight() - HEIGHT);
+      DartBoard db = DartBoard.getInstance();
+      setSize(db.getScreenWidth(), HEIGHT);
+      setLocation(db.getLocationOffset(), DartBoard.getInstance().getScreenHeight() - HEIGHT);
       setLayout(null);
       leftsp = new ScrollPane();
       rightsp = new ScrollPane();

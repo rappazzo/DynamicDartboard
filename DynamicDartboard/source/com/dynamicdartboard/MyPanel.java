@@ -47,7 +47,7 @@ public class MyPanel extends Panel {
       return null;
    }
 
-   public void fillPanel(List<String> names) {
+   public void fillPanel(Collection<String> names) {
       LinePanel t = null;
       int i = 0;
       for (String next : names) {

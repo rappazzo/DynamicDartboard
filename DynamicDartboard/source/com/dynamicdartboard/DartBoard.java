@@ -13,13 +13,14 @@ public class DartBoard extends Window implements MouseListener, Serializable {
 
    public static final String DARTBOARD = "DartBoard";
 
-   private List<String> userNames = null;
+   private NavigableSet<String> userNames = null;
    private Map<String, String> options = null;
 
    private Integer screenWidth = null;
    private Integer screenHeight = null;
    private Integer widthOffset = null;
    private Integer heightOffset = null;
+   private int locationOffset = 0;
 
    Board board;
    CommandWindow commandWindow;
@@ -33,7 +34,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
 
    private static final int WIDTH_OFFSET_PERCENTAGE = 12;
    private static final int HEIGHT_OFFSET_PERCENTAGE = 6;
-   public static final String DEFAULT_IMAGE_RESOURCE_FILE = "../resources/images/decorations.ini";
+   public static final String DEFAULT_IMAGE_RESOURCE_FILE = DartBoardSetup.getDartboardPath() + "resources/images/decorations.ini";
 
    private static DartBoard INSTANCE = null;
 
@@ -142,22 +143,32 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       }
       return heightOffset.intValue();
    }
+   
+   public int getLocationOffset() {
+      return locationOffset;
+   }
+   
+   public void setLocationOffset(int offset) {
+      if (offset >= 0) {
+         this.locationOffset = offset;
+      }
+   }
 
    /**
     * get/set/add the list of names to be used in the dartboard
     */
-   public void setUserNames(List<String> names) {
-      this.userNames = names;
+   public void setUserNames(Collection<String> names) {
+      this.userNames = names instanceof TreeSet ? (TreeSet)names : new TreeSet(names);
    }
 
    public void addUserName(String name) {
       if (this.userNames == null) {
-         this.userNames = new ArrayList();
+         this.userNames = new TreeSet();
       }
       this.userNames.add(name);
    }
 
-   public List<String> getUserNames() {
+   public Collection<String> getUserNames() {
       return this.userNames;
    }
 
@@ -223,20 +234,20 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       Window left = windowMap.get(LEFT);
       left.setLayout(new FlowLayout());
       left.setSize(getScreenWidthOffset(), getScreenHeight() - CommandWindow.HEIGHT);
-      left.setLocation(0, 0);
+      left.setLocation(getLocationOffset(), 0);
       Window right = windowMap.get(RIGHT);
       right.setLayout(new FlowLayout());
       right.setSize(getScreenWidthOffset(), getScreenHeight() - CommandWindow.HEIGHT);
-      right.setLocation(getScreenWidth() - getScreenWidthOffset(), 0);
+      right.setLocation(getLocationOffset() + getScreenWidth() - getScreenWidthOffset(), 0);
       Window top = windowMap.get(TOP);
       top.setLayout(new BorderLayout());
       top.setSize(getScreenWidth() - 2 * getScreenWidthOffset(), getScreenHeightOffset());
-      top.setLocation(getScreenWidthOffset(), 0);
+      top.setLocation(getLocationOffset() + getScreenWidthOffset(), 0);
       top.addWindowListener(winadapt);
       Window bottom = windowMap.get(BOTTOM);
       bottom.setLayout(new BorderLayout());
       bottom.setSize(getScreenWidth() - 2 * getScreenWidthOffset(), getScreenHeightOffset());
-      bottom.setLocation(getScreenWidthOffset(), getScreenHeight() - getScreenHeightOffset() - CommandWindow.HEIGHT);
+      bottom.setLocation(getLocationOffset() + getScreenWidthOffset(), getScreenHeight() - getScreenHeightOffset() - CommandWindow.HEIGHT);
       bottom.addWindowListener(winadapt);
 
       Map<String, Dimension> windowDimension = new HashMap();
@@ -291,7 +302,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       //we should account for the rows being offset by a half width.
       int wOffset = w / (2 * board.getColumns());
       int h = (int)(d.getHeight() / (board.getRows() - 1));
-      int hOffset = h / (4 * board.getRows());
+      int hOffset = h / (8 * board.getRows());
       Box.setWidth(w - wOffset);
       Box.setHeight(h - hOffset);
       g.setFont(font);
@@ -303,7 +314,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
 
    public void save(int x) {
       try {
-         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("saves\\" + x));
+         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DartBoardSetup.getDartboardPath() + "resources/saves/" + x));
          out.writeObject(this);
          out.close();
       } catch (Exception e) {
@@ -358,9 +369,9 @@ public class DartBoard extends Window implements MouseListener, Serializable {
 
          }
          BoardNumber hit = getBoard().findBoardNumber(x, y);
-if (hit != null && hit.getNumber().intValue() == 15) {
-   System.exit(0);
-} else 
+//if (hit != null && hit.getNumber().intValue() == 15) {
+//   System.exit(0);
+//} else 
          if (hit != null && hit.getNumber().intValue() != 0) {
             ActionHandler actionHandler = hit.getActionHandler();
             actionHandler.handle(hit);
