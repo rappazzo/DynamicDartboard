@@ -2,16 +2,16 @@ package com.dynamicdartboard;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
+import java.util.List;
 
 public class CommandWindow extends Window implements MouseListener, Serializable {
    DartBoard dartBoard;
-   ScrollPane leftsp;
-   ScrollPane rightsp;
+   ScrollPane peopleToGoSP;
+   ScrollPane scoresSP;
    ScrollPane ordersp;
-   MyPanel leftPanel;
-   MyPanel rightPanel;
+   MyPanel peopleToGoPanel;
+   MyPanel scoresPanel;
    MyPanel orderPanel;
 
    Label nextUp;
@@ -21,6 +21,8 @@ public class CommandWindow extends Window implements MouseListener, Serializable
    TextField numberField;
    Label orderListLabel;
    Frame grabBagOrderFrame;
+   List<String> toGoList = new ArrayList();
+   SortedMap<Integer, String> scores = new TreeMap();
 
    static final int WIDTH = 200;
    static final int HEIGHT = 100;
@@ -35,16 +37,16 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       setSize(db.getScreenWidth(), HEIGHT);
       setLocation(db.getLocationOffset(), DartBoard.getInstance().getScreenHeight() - HEIGHT);
       setLayout(null);
-      leftsp = new ScrollPane();
-      rightsp = new ScrollPane();
-      leftPanel = new MyPanel(WIDTH, HEIGHT, this, "leftPanel");
-      rightPanel = new MyPanel(WIDTH, HEIGHT, this, "rightPanel");
-      leftsp.add(leftPanel);
-      rightsp.add(rightPanel);
-      leftsp.setBounds(DartBoard.getInstance().getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
-      rightsp.setBounds(DartBoard.getInstance().getScreenWidth() - WIDTH - DartBoard.getInstance().getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
-      add(leftsp);
-      add(rightsp);
+      peopleToGoSP = new ScrollPane();
+      scoresSP = new ScrollPane();
+      peopleToGoPanel = new MyPanel(WIDTH, HEIGHT, this, "peopleToGoPanel");
+      scoresPanel = new MyPanel(WIDTH, HEIGHT, this, "scoresPanel");
+      peopleToGoSP.add(peopleToGoPanel);
+      scoresSP.add(scoresPanel);
+      peopleToGoSP.setBounds(DartBoard.getInstance().getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
+      scoresSP.setBounds(DartBoard.getInstance().getScreenWidth() - WIDTH - DartBoard.getInstance().getScreenWidthOffset() / 2, 0, WIDTH, HEIGHT - 5);
+      add(peopleToGoSP);
+      add(scoresSP);
       nextUp = new Label();
       nextUp.setFont(new Font("Arial", Font.BOLD, 25));
       nextUp.setForeground(Color.red);
@@ -85,7 +87,9 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       numberField.setName("numberField");
       add(numberField);
 
-      leftPanel.fillPanel(DartBoard.getInstance().getUserNames());
+      peopleToGoPanel.fillPanel(db.getUserNames());
+      toGoList.addAll(db.getUserNames());
+      saveLists();
       pack();
    }
 
@@ -98,29 +102,37 @@ public class CommandWindow extends Window implements MouseListener, Serializable
    }
 
    public void assignNumber(int number) {
-      String name = leftPanel.getSelected();
+      String name = peopleToGoPanel.getSelected();
       if (name == null) {
-         name = leftPanel.nextName();
+         name = peopleToGoPanel.nextName();
       }
       if (name == null) {
          return;
       }
 
-      LinePanel item = leftPanel.removeName(name);
+      LinePanel item = peopleToGoPanel.removeName(name);
       if (item != null) {
-         leftPanel.refreshPanel();
-         rightPanel.addName(item);
+         peopleToGoPanel.refreshPanel();
+         scoresPanel.addName(item);
          item.setNumber(number);
-         item.setParent(rightPanel);
-         rightPanel.refreshPanel();
-         leftsp.validate();
-         rightsp.validate();
+         item.setParent(scoresPanel);
+         scoresPanel.refreshPanel();
+         peopleToGoSP.validate();
+         scoresSP.validate();
       }
+      toGoList.remove(name);
+      scores.put(Integer.valueOf(number), name);
+      saveLists();
+   }
+
+   private void saveLists() {
+      ReadableStateManager.persistToGo(toGoList);
+      ReadableStateManager.persistScores(scores);
    }
 
    public void setNextUpText(String name, String id) {
 
-      if (id.equals("leftPanel")) {
+      if (id.equals("peopleToGoPanel")) {
          if (throwersLeft() <= 1) {
             nextUp.setText("THE END");
          } else {
@@ -135,11 +147,11 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       if (name == null || name.equals("")) {
          return;
       }
-      LinePanel item = leftPanel.getLinePanel(name);
+      LinePanel item = peopleToGoPanel.getLinePanel(name);
       if (item == null) {
-         leftPanel.addName(name);
-         leftPanel.refreshPanel();
-         leftsp.validate();
+         peopleToGoPanel.addName(name);
+         peopleToGoPanel.refreshPanel();
+         peopleToGoSP.validate();
          nameField.setText("");
          nameField.validate();
       }
@@ -149,11 +161,11 @@ public class CommandWindow extends Window implements MouseListener, Serializable
       try {
          int num = Integer.parseInt(numberField.getText());
          if (num > 0) {
-            String selected = rightPanel.getSelected();
+            String selected = scoresPanel.getSelected();
             if (selected == null) {
                return;
             }
-            LinePanel panel = rightPanel.getLinePanel(selected);
+            LinePanel panel = scoresPanel.getLinePanel(selected);
             int oldNumber = panel.getNumber();
             if (oldNumber > 0) {
                replaceNumber(num, oldNumber);
@@ -196,8 +208,8 @@ public class CommandWindow extends Window implements MouseListener, Serializable
          WindowAdapter winadapt = new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                if (grabBagOrderFrame != null) {
-                  rightPanel.refreshPanel();
-                  rightsp.validate();
+                  scoresPanel.refreshPanel();
+                  scoresSP.validate();
                   grabBagOrderFrame.dispose();
                }
             }
@@ -214,29 +226,29 @@ public class CommandWindow extends Window implements MouseListener, Serializable
             }
          }
       }
-      orderPanel.getOrderedList(rightPanel);
+      orderPanel.getOrderedList(scoresPanel);
       orderPanel.refreshPanel();
       grabBagOrderFrame.setVisible(true);
       grabBagOrderFrame.validate();
    }
 
    public String getSelected() {
-      String name = leftPanel.getSelected();
+      String name = peopleToGoPanel.getSelected();
       if (name == null) {
-         name = leftPanel.nextName();
+         name = peopleToGoPanel.nextName();
       }
       return name;
    }
 
    public int throwersLeft() {
-      if (leftPanel.getPanels() == null) {
+      if (peopleToGoPanel.getPanels() == null) {
          return 0;
       }
-      return leftPanel.getPanels().size();
+      return peopleToGoPanel.getPanels().size();
    }
 
    public String getHighestName() {
-      return rightPanel.getHighestName();
+      return scoresPanel.getHighestName();
    }
 
    public void mouseClicked(MouseEvent mEvt) {

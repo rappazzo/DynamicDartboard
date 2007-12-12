@@ -112,7 +112,6 @@ public class Board implements Serializable{
    }
    
    public boolean removeNumber( Integer number ) {
-      System.out.println("trying to remove::"+number);
       BoardNumber num = (BoardNumber)numberMap.get(number);
       if(num == null) {
          System.out.println("number not in board");

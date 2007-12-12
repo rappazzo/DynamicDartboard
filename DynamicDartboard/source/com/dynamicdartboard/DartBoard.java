@@ -300,9 +300,9 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       Board board = getBoard();
       int w = (int)(d.getWidth() / board.getColumns());
       //we should account for the rows being offset by a half width.
-      int wOffset = w / (2 * board.getColumns());
+      int wOffset = w / (2 * board.getColumns()) + 1;
       int h = (int)(d.getHeight() / (board.getRows() - 1));
-      int hOffset = h / (8 * board.getRows());
+      int hOffset = h / (3 * board.getRows()) + 1;
       Box.setWidth(w - wOffset);
       Box.setHeight(h - hOffset);
       g.setFont(font);

@@ -1,7 +1,7 @@
 @echo OFF
 @setlocal
-cd C:\dev\DynamicDartboard\bin
-set ENVIRONMENT_HOME=\dev\DynamicDartboard
+cd C:\dev\DynamicDartboard-awt\bin
+set ENVIRONMENT_HOME=\dev\DynamicDartboard-awt
 set LIBDIR=%ENVIRONMENT_HOME%\lib
 
 @set JDK=%ENVIRONMENT_HOME%\jdk

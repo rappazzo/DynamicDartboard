@@ -13,17 +13,18 @@ public class DartBoardSetup {
    //Arguments
    public static final String SCREEN_WIDTH = "width";
    public static final String SCREEN_HEIGHT = "height";
-   public static final String OFFSET = "offset";
+   public static final String SCREEN = "screen";
    public static final String ROWS = "rows";
    public static final String COLS = "columns";
    public static final String FILE = "file";
    public static final String NAMES = "list";
    public static final String HELP = "help";
+   public static final String DIR = "dir";
    public static final Collection<String> ARG_TYPES = Collections.unmodifiableCollection(Arrays.asList(new String[] {
-      ROWS, COLS, FILE, NAMES, HELP, SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET,
+      ROWS, COLS, FILE, NAMES, HELP, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN, DIR,
    }));
    public static final Collection<String> ARGS_WITH_OPTIONS = Collections.unmodifiableCollection(Arrays.asList(new String[] {
-      ROWS, COLS, FILE, NAMES, SCREEN_WIDTH, SCREEN_HEIGHT, OFFSET,
+      ROWS, COLS, FILE, NAMES, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN, DIR,
    }));
    
    public static final String DEFAULT_NAMES_FILE = getDartboardPath() + "resources/names.txt";
@@ -61,7 +62,8 @@ public class DartBoardSetup {
       usage.append("    -r --rows <##> - specify the number of rows\n");
       usage.append("    -c --columns <##> - specify the number of columns\n");
       usage.append("    -n --names <file name> - specify a file with the list of names to start from.\n");
-      usage.append("    -o --offset <##> - specify the position offset (specify a number or +X to shift by X screen widths).\n");
+      usage.append("    -s --screen <##> - specify the position offset (specify a number or +X to shift by X screen widths).\n");
+      usage.append("    -d --dir <dir name> - specify the location to output the important data.\n");
       usage.append("    -? --help - show this help text.\n\n");
       usage.append(" A dartboard will be started in one of these possible option sets (with the following priority):\n");
       usage.append("    (1) Resume from a previous session (this will ignore the ROWS, COLUMNS, and LIST options).\n");
@@ -138,7 +140,7 @@ public class DartBoardSetup {
                dartBoard = DartBoard.getInstance().create(parent);
                setScreenDimensions(argMap, dartBoard);
                int offset = 0;
-               String offsetString = argMap.get(OFFSET);
+               String offsetString = argMap.get(SCREEN);
                try {
                   if (offsetString.charAt(0) == '+') {
                      offset = new BigDecimal(offsetString.substring(1)).multiply(new BigDecimal(dartBoard.getScreenWidth())).intValue();
@@ -151,6 +153,7 @@ public class DartBoardSetup {
                if (offset < 0) {
                   offset = 0;
                }
+               ReadableStateManager.setDirectory(argMap.get(DIR));
                dartBoard.setLocationOffset(offset);
                dartBoard.setSize(dartBoard.getScreenWidth() - 2 * dartBoard.getScreenWidthOffset(), dartBoard.getScreenHeight() - 2 * dartBoard.getScreenHeightOffset() - CommandWindow.HEIGHT);
                dartBoard.setLocation(offset + dartBoard.getScreenWidthOffset(), dartBoard.getScreenHeightOffset());

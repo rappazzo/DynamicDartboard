@@ -83,7 +83,7 @@ public class MyPanel extends Panel {
       LinePanel[] s = sourcePanels.toArray(new LinePanel[sourcePanels.size()]);
       for (int i = commandWindow.getColumns() * commandWindow.getRows(); names.size() < s.length && i > 0; i--) {
          for (int j = 0; j < s.length; j++) {
-            if (((LinePanel)s[j]).getNumber() == i) {
+            if (s[j].getNumber() == i) {
                names.add(s[j]);
                break;
             }
