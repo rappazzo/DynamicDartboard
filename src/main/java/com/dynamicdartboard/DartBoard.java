@@ -18,8 +18,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -58,7 +59,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
 
    private static final int WIDTH_OFFSET_PERCENTAGE = 12;
    private static final int HEIGHT_OFFSET_PERCENTAGE = 6;
-   public static final String DEFAULT_IMAGE_RESOURCE_FILE = DartBoardSetup.getDartboardPath() + "src/main/resources/images/decorations.ini";
+   public static final String DEFAULT_IMAGE_RESOURCE_NAME = "images/decorations.ini";
 
    private static DartBoard INSTANCE = null;
 
@@ -282,9 +283,9 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       windowDimension.put(BOTTOM, new Dimension(getScreenWidth() - 2 * getScreenWidthOffset(), getScreenHeightOffset()));
 
       try {
-         File imageResourceFile = new File(DEFAULT_IMAGE_RESOURCE_FILE);
-         BufferedReader reader = new BufferedReader(new FileReader(imageResourceFile));
-         if (reader != null) {
+    	 InputStream decIn = this.getClass().getClassLoader().getResourceAsStream(DEFAULT_IMAGE_RESOURCE_NAME);
+         if (decIn != null) {
+        	BufferedReader reader = new BufferedReader(new InputStreamReader(decIn, "UTF-8"));
             Pattern sectionPattern = Pattern.compile("\\[(\\w+)(\\s(\\w+)=\"?(\\w+)\"?)?\\]");
             String section = null;
             String sectionAlign = null;
@@ -299,7 +300,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
                   } else if (section != null) {
                      //image data
                      String[] images = lastRead.split(",");
-                     windowMap.get(section).add(new ImageCanvas(imageResourceFile.getParent() + "/", images, windowDimension.get(section)), sectionAlign);
+                     windowMap.get(section).add(new ImageCanvas("images/", images, windowDimension.get(section)), sectionAlign);
                   }
                }
             } while (lastRead != null);
@@ -340,7 +341,11 @@ public void paint(Graphics g) {
 
    public void save(int x) {
       try {
-         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DartBoardSetup.getDartboardPath() + "bin/saves/" + x));
+    	 File saveDir = new File(DartBoardSetup.getDartboardPath() + "bin/saves/");
+    	 if (!saveDir.exists()) {
+    		 saveDir.mkdirs();
+    	 }
+         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(saveDir, String.valueOf(x))));
          out.writeObject(this);
          out.close();
       } catch (Exception e) {

@@ -1,17 +1,25 @@
 package com.dynamicdartboard;
-import java.applet.*;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 public class SoundManager {
-   static Map<String, AudioClip> sounds = new HashMap<String, AudioClip>();
-   static Map<String, String> soundFiles = new HashMap<String, String>();
+   static Map<String, AudioClip> sounds = new HashMap<>();
+   static Map<String, String> soundFiles = new HashMap<>();
    private static AudioPlayer player = new AudioPlayer();
-   static List<String> goodSounds = new ArrayList<String>();
-   static List<String> badSounds = new ArrayList<String>();
-   static List<String> neutralSounds = new ArrayList<String>();
-   static List<String> specialSounds = new ArrayList<String>();
+   static List<String> goodSounds = new ArrayList<>();
+   static List<String> badSounds = new ArrayList<>();
+   static List<String> neutralSounds = new ArrayList<>();
+   static List<String> specialSounds = new ArrayList<>();
 
    public static void playRandom(String type) {
       List<String> list = null;
@@ -38,13 +46,9 @@ public class SoundManager {
          if (file == null) {
             return;
          }
-         try {
-            URL url = new File(file).toURI().toURL();
-            clip = Applet.newAudioClip(url);
-            sounds.put(name, clip);
-         } catch (MalformedURLException e) {
-            System.err.println(e.getMessage());
-         }
+         URL url = SoundManager.class.getClass().getClassLoader().getResource("sounds/"+file);
+         clip = Applet.newAudioClip(url);
+         sounds.put(name, clip);
       }
       if (clip != null) {
          player.play(clip);
@@ -61,13 +65,9 @@ public class SoundManager {
          if (file == null) {
             continue;
          }
-         try {
-            URL url = new File(file).toURI().toURL();
-            AudioClip clip = Applet.newAudioClip(url);
-            sounds.put(name, clip);
-         } catch (MalformedURLException e) {
-            System.err.println(e.getMessage());
-         }
+         URL url = SoundManager.class.getClass().getClassLoader().getResource("sounds/"+file);
+         AudioClip clip = Applet.newAudioClip(url);
+         sounds.put(name, clip);
       }
    }
 
@@ -87,8 +87,8 @@ public class SoundManager {
       BufferedReader fin = null;
       List<String> currentList = null;
       try {
-         fin = new BufferedReader(new InputStreamReader(new FileInputStream(DartBoardSetup.getDartboardPath() + "resources/sounds/sounds.txt")));
-         soundFiles = new HashMap<String, String>();
+         fin = new BufferedReader(new InputStreamReader(SoundManager.class.getClass().getClassLoader().getResourceAsStream("sounds/sounds.txt")));
+         soundFiles = new HashMap<>();
          String sound = fin.readLine();
          while (sound != null) {
             if (sound.equals("-good-")) {

@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +38,7 @@ public class DartBoardSetup {
       ROWS, COLS, FILE, NAMES, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN, DIR,
    }));
 
-   public static final String DEFAULT_NAMES_FILE = getDartboardPath() + "src/main/resources/names.txt";
+   public static final String DEFAULT_NAMES_RESOURCE_NAME = "names.txt";
 
    public static String getDartboardPath() {
       if (dartboardPath == null) {
@@ -99,7 +101,14 @@ public class DartBoardSetup {
             String namesFile = argMap.get(NAMES);
             List<String> names = null;
             try {
-               BufferedReader reader = new BufferedReader(new FileReader(namesFile != null ? namesFile : DEFAULT_NAMES_FILE));
+
+               BufferedReader reader;
+               if (namesFile != null) {
+                  reader = new BufferedReader(new FileReader(namesFile));
+               } else {
+            	  InputStream in = DartBoardSetup.class.getClassLoader().getResourceAsStream(DEFAULT_NAMES_RESOURCE_NAME);
+            	  reader = new BufferedReader(new InputStreamReader(in));
+               }
                names = new ArrayList<>();
                if (reader != null) {
                   String lastRead = null;

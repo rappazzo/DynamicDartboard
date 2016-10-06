@@ -1,7 +1,15 @@
 package com.dynamicdartboard;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * @author mrappazz
@@ -10,10 +18,10 @@ import java.util.*;
  **/
 public class ReadableStateManager {
 
-   private static String dir = "./"; 
-   private static final String SCORES = "scores.txt"; 
-   private static final String REMAINING = "remaining.txt"; 
-   
+   private static String dir = "bin/";
+   private static final String SCORES = "scores.txt";
+   private static final String REMAINING = "remaining.txt";
+
    public static void setDirectory(String dir) {
       if (dir != null && !dir.equals("")) {
          if (!dir.endsWith("/") || !dir.endsWith("\\")) {
@@ -62,8 +70,8 @@ public class ReadableStateManager {
          System.out.println("ERROR Persisting " + REMAINING.toString() + " - " + e.getMessage());
       }
    }
-   
+
    private static void writeSortedString(Collection<String> unsorted, File target) {
    }
-   
+
 }

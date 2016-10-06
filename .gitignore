@@ -1,2 +1,5 @@
 /target/
 .classpath
+bin/scores.txt
+bin/remaining.txt
+bin/saves
