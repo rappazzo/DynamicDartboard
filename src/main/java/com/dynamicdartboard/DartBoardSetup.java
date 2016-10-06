@@ -1,13 +1,22 @@
 package com.dynamicdartboard;
 
-import java.awt.*;
-import java.io.*;
-import java.math.*;
-import java.util.*;
+import java.awt.Frame;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DartBoardSetup {
-   
+
    private static String dartboardPath = null;
 
    //Arguments
@@ -26,14 +35,15 @@ public class DartBoardSetup {
    public static final Collection<String> ARGS_WITH_OPTIONS = Collections.unmodifiableCollection(Arrays.asList(new String[] {
       ROWS, COLS, FILE, NAMES, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN, DIR,
    }));
-   
-   public static final String DEFAULT_NAMES_FILE = getDartboardPath() + "resources/names.txt";
-   
+
+   public static final String DEFAULT_NAMES_FILE = getDartboardPath() + "src/main/resources/names.txt";
+
    public static String getDartboardPath() {
       if (dartboardPath == null) {
          File currentDir = new File(".").getAbsoluteFile();
          FilenameFilter rootFilter = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
+            @Override
+			public boolean accept(File dir, String name) {
                return name.equalsIgnoreCase("root");
             }
          };
@@ -90,7 +100,7 @@ public class DartBoardSetup {
             List<String> names = null;
             try {
                BufferedReader reader = new BufferedReader(new FileReader(namesFile != null ? namesFile : DEFAULT_NAMES_FILE));
-               names = new ArrayList<String>();
+               names = new ArrayList<>();
                if (reader != null) {
                   String lastRead = null;
                   do {
@@ -177,7 +187,7 @@ public class DartBoardSetup {
          return;
       }
    }
-   
+
    private static int getIntArg(String argName, Map<String, String> argMap) {
       try {
          return Integer.valueOf(argMap.get(argName)).intValue();
@@ -186,7 +196,7 @@ public class DartBoardSetup {
       }
       return -1;
    }
-   
+
    private static void setScreenDimensions(Map<String, String> argMap, DartBoard dartBoard) {
       int screenWidth = getIntArg(SCREEN_WIDTH, argMap);
       if (screenWidth > 0) {
@@ -234,5 +244,5 @@ public class DartBoardSetup {
       }
       return argMap;
    }
-   
+
 }

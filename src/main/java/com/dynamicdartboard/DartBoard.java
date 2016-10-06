@@ -1,13 +1,37 @@
 package com.dynamicdartboard;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import java.util.List;
-import java.math.*;
-import java.util.regex.*;
-import com.dynamicdartboard.actionhandler.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NavigableSet;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.dynamicdartboard.actionhandler.ActionHandler;
 
 public class DartBoard extends Window implements MouseListener, Serializable {
 
@@ -34,12 +58,13 @@ public class DartBoard extends Window implements MouseListener, Serializable {
 
    private static final int WIDTH_OFFSET_PERCENTAGE = 12;
    private static final int HEIGHT_OFFSET_PERCENTAGE = 6;
-   public static final String DEFAULT_IMAGE_RESOURCE_FILE = DartBoardSetup.getDartboardPath() + "resources/images/decorations.ini";
+   public static final String DEFAULT_IMAGE_RESOURCE_FILE = DartBoardSetup.getDartboardPath() + "src/main/resources/images/decorations.ini";
 
    private static DartBoard INSTANCE = null;
 
    transient static WindowAdapter winadapt = new WindowAdapter() {
-      public void windowClosing(WindowEvent e) {
+      @Override
+	public void windowClosing(WindowEvent e) {
          System.exit(0);
       }
    };
@@ -143,11 +168,11 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       }
       return heightOffset.intValue();
    }
-   
+
    public int getLocationOffset() {
       return locationOffset;
    }
-   
+
    public void setLocationOffset(int offset) {
       if (offset >= 0) {
          this.locationOffset = offset;
@@ -294,7 +319,8 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       addMouseListener(this);
    }
 
-   public void paint(Graphics g) {
+   @Override
+public void paint(Graphics g) {
       Font font = new Font("Arial", Font.BOLD, 18);
       Dimension d = getSize();
       Board board = getBoard();
@@ -314,7 +340,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
 
    public void save(int x) {
       try {
-         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DartBoardSetup.getDartboardPath() + "resources/saves/" + x));
+         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(DartBoardSetup.getDartboardPath() + "bin/saves/" + x));
          out.writeObject(this);
          out.close();
       } catch (Exception e) {
@@ -322,7 +348,8 @@ public class DartBoard extends Window implements MouseListener, Serializable {
       }
    }
 
-   public void mouseReleased(MouseEvent mEvt) {
+   @Override
+public void mouseReleased(MouseEvent mEvt) {
       if (DARTBOARD.equals(mEvt.getComponent().getName()) && commandWindow.throwersLeft() > 0) {
          int x = mEvt.getX();
          int y = mEvt.getY();
@@ -371,7 +398,7 @@ public class DartBoard extends Window implements MouseListener, Serializable {
          BoardNumber hit = getBoard().findBoardNumber(x, y);
 //if (hit != null && hit.getNumber().intValue() == 15) {
 //   System.exit(0);
-//} else 
+//} else
          if (hit != null && hit.getNumber().intValue() != 0) {
             ActionHandler actionHandler = hit.getActionHandler();
             actionHandler.handle(hit);
@@ -401,16 +428,20 @@ public class DartBoard extends Window implements MouseListener, Serializable {
    }
 
    //Unused mouse events which are implemented as part of the MouseListener Interface
-   public void mousePressed(MouseEvent mEvt) {
+   @Override
+public void mousePressed(MouseEvent mEvt) {
    }
 
-   public void mouseEntered(MouseEvent mEvt) {
+   @Override
+public void mouseEntered(MouseEvent mEvt) {
    }
 
-   public void mouseExited(MouseEvent mEvt) {
+   @Override
+public void mouseExited(MouseEvent mEvt) {
    }
 
-   public void mouseClicked(MouseEvent mEvt) {
+   @Override
+public void mouseClicked(MouseEvent mEvt) {
    }
 
    public static void main(String[] args) {
