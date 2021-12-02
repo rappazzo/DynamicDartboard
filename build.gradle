@@ -1,0 +1,12 @@
+plugins {
+    id "application"
+}
+
+apply plugin : "java" 
+ext {
+   javaMainClass = "com.dynamicdartboard.DartBoard"
+}
+
+application {
+    mainClassName = javaMainClass
+}

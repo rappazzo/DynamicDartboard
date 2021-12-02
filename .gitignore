@@ -3,3 +3,9 @@
 bin/scores.txt
 bin/remaining.txt
 bin/saves
+
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
